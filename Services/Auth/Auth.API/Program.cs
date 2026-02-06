@@ -6,6 +6,7 @@ using BuildingBlocks.Behaviors;
 using BuildingBlocks.Exceptions.Handler;
 using BuildingBlocks.Messaging.MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,8 +14,16 @@ builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(J
 
 builder.Services.AddDbContext<AuthContext>(opt =>
 {
-    opt.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection"));
+    var originConn = builder.Configuration.GetConnectionString("PostgresConnection");
+
+    var conn = new NpgsqlConnectionStringBuilder(originConn)
+    {
+        TrustServerCertificate = true
+    };
+
+    opt.UseNpgsql(conn.ConnectionString);
 });
+
 
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<ITokenService, TokenService>();

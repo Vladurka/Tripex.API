@@ -38,7 +38,7 @@ public class OutboxPublisherService<T>(IServiceScopeFactory scopeFactory) : Back
             }
 
             await db.SaveChangesAsync(cancellationToken);
-            await Task.Delay(10000, cancellationToken);
+            await Task.Delay(30000, cancellationToken);
         }
     }
 }

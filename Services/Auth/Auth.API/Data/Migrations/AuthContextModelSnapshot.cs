@@ -62,7 +62,7 @@ namespace Auth.API.Data.Migrations
                     b.HasIndex("UserName")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("BuildingBlocks.Messaging.Outbox.OutboxMessage", b =>
@@ -90,7 +90,7 @@ namespace Auth.API.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OutboxMessages");
+                    b.ToTable("OutboxMessages", (string)null);
                 });
 #pragma warning restore 612, 618
         }

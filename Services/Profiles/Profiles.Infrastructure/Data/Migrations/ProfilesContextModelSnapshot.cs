@@ -47,7 +47,7 @@ namespace Profiles.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OutboxMessages");
+                    b.ToTable("OutboxMessages", (string)null);
                 });
 
             modelBuilder.Entity("Profiles.Domain.Models.Profile", b =>
@@ -110,7 +110,7 @@ namespace Profiles.Infrastructure.Data.Migrations
                     b.HasIndex("ProfileName")
                         .IsUnique();
 
-                    b.ToTable("Profiles");
+                    b.ToTable("Profiles", (string)null);
                 });
 #pragma warning restore 612, 618
         }

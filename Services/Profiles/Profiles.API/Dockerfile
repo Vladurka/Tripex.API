@@ -1,22 +1,32 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
+﻿# ===== Base image =====
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
+# ===== Build image =====
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Services/Profiles/Profiles.API/Profiles.API.csproj", "Services/Profiles/Profiles.API/"]
-RUN dotnet restore "Services/Profiles/Profiles.API/Profiles.API.csproj"
+
+# Копируем всю структуру сервисов (чтобы были доступны зависимые проекты)
 COPY . .
-WORKDIR "/src/Services/Profiles/Profiles.API"
+
+# Переходим в директорию Profiles.API
+WORKDIR /src/Profiles/Profiles.API
+
+# Восстанавливаем зависимости
+RUN dotnet restore "Profiles.API.csproj"
+
+# Собираем проект
 RUN dotnet build "Profiles.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
+# ===== Publish =====
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "Profiles.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
+# ===== Final image =====
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .

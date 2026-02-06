@@ -1,8 +1,9 @@
+using BuildingBlocks.Cache;
 using Profiles.Domain.Abstractions;
 using Profiles.Domain.ValueObjects;
 
 namespace Profiles.Domain.Models;
-public class Profile : Entity<ProfileId>
+public class Profile : Entity<ProfileId>, ICachable
 {
     public string? AvatarUrl { get; private set; }
     public ProfileName ProfileName { get; private set; }

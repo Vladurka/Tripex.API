@@ -1,32 +1,106 @@
+version: "3.9"
+
 services:
-  profiles-redis-db:
+  # ===================== PostgreSQL =====================
+
+  auth-postgres-db:
+    image: postgres:17
+    container_name: auth-postgres
+    restart: on-failure
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: auth
+    ports:
+      - "5433:5432"
+    volumes:
+      - auth_postgres_data:/var/lib/postgresql/data
+
+  profile-postgres-db:
+    image: postgres:17
+    container_name: profile-postgres
+    restart: on-failure
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: profile
+    ports:
+      - "5434:5432"
+    volumes:
+      - profile_postgres_data:/var/lib/postgresql/data
+
+
+  # ======================== Redis ========================
+
+  profile-redis-db:
     image: redis:latest
+    container_name: profile-redis
+    restart: on-failure
     ports:
       - "6380:6379"
-    restart: on-failure
     volumes:
-      - "profiles-redis-data:/data"
-        
-  posts-redis-db:
+      - profile_redis_data:/data
+
+  post-redis-db:
     image: redis:latest
+    container_name: post-redis
+    restart: on-failure
     ports:
       - "6381:6379"
-    restart: on-failure
     volumes:
-      - "posts-redis-data:/data"
-  
+      - post_redis_data:/data
+
+
+  # ======================== Scylla ========================
+
+  post-scylla-db:
+    image: scylladb/scylla:latest
+    container_name: post-scylla
+    restart: unless-stopped
+    ports:
+      - "9043:9042"
+    command: --smp 2 --memory 2G
+    volumes:
+      - post_scylla_data:/var/lib/scylla
+
+  interaction-scylla-db:
+    image: scylladb/scylla:latest
+    container_name: interaction-scylla
+    restart: unless-stopped
+    ports:
+      - "9044:9042"
+    command: --smp 2 --memory 2G
+    volumes:
+      - interaction_scylla_data:/var/lib/scylla
+
+
+  # ======================= RabbitMQ =======================
+
   rabbitmq:
     image: rabbitmq:management
     container_name: rabbitmq
     hostname: rabbitmq
+    restart: on-failure
     environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
     ports:
       - "5672:5672"
       - "15672:15672"
-    restart: on-failure
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+
+# ========================= VOLUMES =========================
 
 volumes:
-  profiles-redis-data:
-  posts-redis-data:
+  auth_postgres_data:
+  profile_postgres_data:
+
+  profile_redis_data:
+  post_redis_data:
+
+  post_scylla_data:
+  interaction_scylla_data:
+
+  rabbitmq_data:
