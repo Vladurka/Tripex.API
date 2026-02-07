@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
 using Profiles.Application.Data;
 using Profiles.Infrastructure.Data;
 using StackExchange.Redis;
@@ -16,7 +17,11 @@ public static class DependencyInjection
 
         services.AddDbContext<ProfilesContext>(options =>
         {
-            options.UseNpgsql(connectionString);
+            var conn = new NpgsqlConnectionStringBuilder(connectionString)
+            {
+                TrustServerCertificate = true,
+            };
+            options.UseNpgsql(conn.ConnectionString);
         });
         
         services.AddSingleton<IConnectionMultiplexer>(sp =>

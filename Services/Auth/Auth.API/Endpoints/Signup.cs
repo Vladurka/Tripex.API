@@ -6,7 +6,7 @@ public class Signup : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/auth/signup", async (SignupCommand command, ISender sender) =>{
+        app.MapPost("api/auth/signup", async (SignupCommand command, [FromServices] ISender sender) =>{
             {
                 var result = await sender.Send(command);
                 return Results.Ok(result);

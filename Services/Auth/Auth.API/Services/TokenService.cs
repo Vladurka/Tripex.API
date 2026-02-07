@@ -1,4 +1,6 @@
 ﻿namespace Auth.API.Services;
+using System.Security.Cryptography;
+
 
 public class TokenService : ITokenService
 {
@@ -43,13 +45,15 @@ public class TokenService : ITokenService
     {
         Claim[] claims = [new("userId", id.ToString())];
 
-        var signingCredentials = new SigningCredentials(
-            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecurityKey)),
-            SecurityAlgorithms.HmacSha256);
+        var rsa = RSA.Create();
+        rsa.ImportFromPem(File.ReadAllText(_jwtOptions.PrivateKeyPath));
+
+        var signingKey = new RsaSecurityKey(rsa) { KeyId = _jwtOptions.KeyId };
+        var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.RsaSha256);
 
         var token = new JwtSecurityToken(
-            issuer: _jwtOptions.Issuer, 
-            audience: _jwtOptions.Audience, 
+            issuer: _jwtOptions.Issuer,
+            audience: _jwtOptions.Audience,
             claims: claims,
             signingCredentials: signingCredentials,
             expires: DateTime.UtcNow.AddMinutes(_jwtOptions.AccessTokenExpirationMinutes));

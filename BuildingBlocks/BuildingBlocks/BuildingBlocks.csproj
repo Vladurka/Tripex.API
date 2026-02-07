@@ -7,32 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="bin\Debug\net8.0\" />
-      <Folder Include="obj\Debug\net8.0\refint\" />
-      <Folder Include="obj\Debug\net8.0\ref\" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Include="obj\BuildingBlocks.csproj.nuget.dgspec.json" />
-      <Content Include="obj\BuildingBlocks.csproj.nuget.g.props" />
-      <Content Include="obj\BuildingBlocks.csproj.nuget.g.targets" />
-      <Content Include="obj\Debug\net8.0\BuildingBlocks.AssemblyInfoInputs.cache" />
-      <Content Include="obj\Debug\net8.0\BuildingBlocks.assets.cache" />
-      <Content Include="obj\Debug\net8.0\BuildingBlocks.csproj.AssemblyReference.cache" />
-      <Content Include="obj\Debug\net8.0\BuildingBlocks.GeneratedMSBuildEditorConfig.editorconfig" />
-      <Content Include="obj\project.assets.json" />
-      <Content Include="obj\project.nuget.cache" />
-      <Content Include="obj\project.packagespec.json" />
-      <Content Include="obj\rider.project.restore.info" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Include="obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs" />
-      <Compile Include="obj\Debug\net8.0\BuildingBlocks.AssemblyInfo.cs" />
-      <Compile Include="obj\Debug\net8.0\BuildingBlocks.GlobalUsings.g.cs" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="Azure.AI.ContentSafety" Version="1.0.0" />
       <PackageReference Include="Azure.Storage.Blobs" Version="12.24.0" />
       <PackageReference Include="FluentValidation" Version="12.0.0-preview1" />

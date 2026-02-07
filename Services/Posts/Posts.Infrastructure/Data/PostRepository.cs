@@ -14,9 +14,9 @@ public class PostRepository : IPostRepository
     private readonly Table<PostByIdDb> _postsById;
     private readonly Table<PostByProfileDb> _postsByProfile;
 
-    public PostRepository(IOptions<CassandraSettings> options)
+    public PostRepository(IOptions<ScyllaDbSettings> options)
     {
-        var session = CassandraSession.Connect(options);
+        var session = ScyllaDbSession.Connect(options);
         _postsById = new Table<PostByIdDb>(session);
         _postsByProfile = new Table<PostByProfileDb>(session);
     }

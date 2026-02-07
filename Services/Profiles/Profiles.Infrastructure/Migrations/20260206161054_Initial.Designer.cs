@@ -9,10 +9,10 @@ using Profiles.Infrastructure.Data;
 
 #nullable disable
 
-namespace Profiles.Infrastructure.Data.Migrations
+namespace Profiles.Infrastructure.Migrations
 {
     [DbContext(typeof(ProfilesContext))]
-    [Migration("20250609132755_Initial")]
+    [Migration("20260206161054_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

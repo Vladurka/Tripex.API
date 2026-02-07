@@ -12,8 +12,6 @@ public static class DependencyInjection
         services.AddExceptionHandler<CustomExceptionHandler>();
         services.AddHealthChecks();
         
-        services.AddAuth(configuration);
-            
         return services;
     }
 
@@ -23,8 +21,6 @@ public static class DependencyInjection
         app.UseExceptionHandler(opts => { });
         app.UseHealthChecks("/health");
 
-        app.UseAuth();
-            
         return app;
     }
 }

@@ -7,7 +7,8 @@ public class GetPostsByUserId : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("api/posts/user/{userId:guid}", async (Guid userId, ISender sender) =>
+        app.MapGet("api/posts/user/{userId:guid}", 
+                async (Guid userId, [FromServices] ISender sender) =>
             {
                 var result = await sender.Send(new GetPostsByUserQuery(userId));
                 return Results.Ok(result);

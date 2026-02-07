@@ -8,7 +8,7 @@ using Profiles.Infrastructure.Data;
 
 #nullable disable
 
-namespace Profiles.Infrastructure.Data.Migrations
+namespace Profiles.Infrastructure.Migrations
 {
     [DbContext(typeof(ProfilesContext))]
     partial class ProfilesContextModelSnapshot : ModelSnapshot

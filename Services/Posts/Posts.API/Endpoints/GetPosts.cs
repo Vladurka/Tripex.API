@@ -6,7 +6,7 @@ public class GetPosts : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("api/posts", async (ISender sender) =>
+        app.MapGet("api/posts", async ([FromServices] ISender sender) =>
         {
             var result = await sender.Send(new GetPostsQuery());
             return Results.Ok(result);

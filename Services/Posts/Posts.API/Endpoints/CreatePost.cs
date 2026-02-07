@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using Posts.Application.Posts.Commands.CreatePost;
 
 namespace Posts.API.Endpoints;
@@ -7,7 +6,8 @@ public class CreatePost : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/posts", async ([FromForm] CreatePostCommand command, ISender sender, IJwtHelper helper) =>
+        app.MapPost("api/posts", 
+                async ([FromForm] CreatePostCommand command, [FromServices] ISender sender, [FromServices] IJwtHelper helper) =>
         {
             command.ProfileId = helper.GetUserIdByToken();
             var result = await sender.Send(command);

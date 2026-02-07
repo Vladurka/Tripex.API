@@ -5,7 +5,7 @@ public class Logout : ICarterModule
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         app.MapPost("api/auth/logout", 
-                (IOptions<JwtOptions> jwtOptions, ICookiesService cookiesService) =>
+                (IOptions<JwtOptions> jwtOptions, [FromServices] ICookiesService cookiesService) =>
             {
                 cookiesService.DeleteCookie(jwtOptions.Value.TokenName);
                 return Results.NoContent(); 
