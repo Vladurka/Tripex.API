@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   # ===================== PostgreSQL =====================
 
@@ -13,6 +11,8 @@ services:
       POSTGRES_DB: auth
     ports:
       - "5433:5432"
+    networks:
+      - appnet
     volumes:
       - auth_postgres_data:/var/lib/postgresql/data
 
@@ -26,6 +26,8 @@ services:
       POSTGRES_DB: profile
     ports:
       - "5434:5432"
+    networks:
+      - appnet
     volumes:
       - profile_postgres_data:/var/lib/postgresql/data
 
@@ -38,6 +40,8 @@ services:
     restart: on-failure
     ports:
       - "6380:6379"
+    networks:
+      - appnet
     volumes:
       - profile_redis_data:/data
 
@@ -47,6 +51,8 @@ services:
     restart: on-failure
     ports:
       - "6381:6379"
+    networks:
+      - appnet
     volumes:
       - post_redis_data:/data
 
@@ -60,6 +66,8 @@ services:
     ports:
       - "9043:9042"
     command: --smp 2 --memory 2G
+    networks:
+      - appnet
     volumes:
       - post_scylla_data:/var/lib/scylla
 
@@ -70,6 +78,8 @@ services:
     ports:
       - "9044:9042"
     command: --smp 2 --memory 2G
+    networks:
+      - appnet
     volumes:
       - interaction_scylla_data:/var/lib/scylla
 
@@ -87,9 +97,68 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    networks:
+      - appnet
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+        
+# ========================= Services ========================
 
+  gateway-yarp:
+    build:
+      context: ..
+      dockerfile: Services/Gateway/Gateway.YARP/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    env_file:
+      - Gateway/Gateway.YARP/.env
+    depends_on:
+      - auth-api
+      - profiles-api
+      - posts-api
+      - interaction-api
+    networks:
+      - appnet
+
+  auth-api:
+    build:
+      context: ..
+      dockerfile: Services/Auth/Auth.API/Dockerfile
+    env_file:
+      - Auth/Auth.API/.env
+    networks:
+      - appnet
+
+  profiles-api:
+    build:
+      context: ..
+      dockerfile: Services/Profiles/Profiles.API/Dockerfile
+    env_file:
+      - Profiles/Profiles.API/.env
+    networks:
+      - appnet
+
+  posts-api:
+    build:
+      context: ..
+      dockerfile: Services/Posts/Posts.API/Dockerfile
+    env_file:
+      - Posts/Posts.API/.env
+    networks:
+      - appnet
+
+  interaction-api:
+    build:
+      context: ..
+      dockerfile: Services/Interaction/Interaction.API/Dockerfile
+    env_file:
+      - Interaction/Interaction.API/.env
+    depends_on:
+      - rabbitmq
+      - interaction-scylla-db
+    networks:
+      - appnet
 
 # ========================= VOLUMES =========================
 
@@ -104,3 +173,9 @@ volumes:
   interaction_scylla_data:
 
   rabbitmq_data:
+  
+# ========================= NETWORKS =========================
+
+networks:
+  appnet:
+    driver: bridge

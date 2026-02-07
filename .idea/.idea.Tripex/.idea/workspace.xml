@@ -5,6 +5,8 @@
     <projectFile profileName="http">Gateway/Gateway.YARP/Gateway.YARP.csproj</projectFile>
     <projectFile kind="Docker">Services/Auth/Auth.API/Auth.API.csproj</projectFile>
     <projectFile profileName="http">Services/Auth/Auth.API/Auth.API.csproj</projectFile>
+    <projectFile kind="Docker">Services/Gateway.YARP/Gateway.YARP.csproj</projectFile>
+    <projectFile kind="Docker">Services/Gateway/Gateway.YARP/Gateway.YARP.csproj</projectFile>
     <projectFile kind="Docker">Services/Interaction/Interaction.API/Interaction.API.csproj</projectFile>
     <projectFile profileName="http">Services/Interaction/Interaction.API/Interaction.API.csproj</projectFile>
     <projectFile kind="Docker">Services/Posts/Posts.API/Posts.API.csproj</projectFile>
@@ -13,30 +15,97 @@
     <projectFile profileName="http">Services/Profiles/Profiles.API/Profiles.API.csproj</projectFile>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ae108a27-0815-49a9-bcd3-deadefab7b92" name="Changes" comment="" />
+    <list default="true" id="ae108a27-0815-49a9-bcd3-deadefab7b92" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Services/.dockerignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Services/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Services/Auth/Auth.API/Endpoints/Jwks.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Services/Auth/Auth.API/Endpoints/OpenIdConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Tripex/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Tripex/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BuildingBlocks/BuildingBlocks/Auth/Extensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BuildingBlocks/BuildingBlocks/Auth/Extensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gateway/Gateway.YARP/.env" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gateway/Gateway.YARP/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gateway/Gateway.YARP/Gateway.YARP.csproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gateway/Gateway.YARP/Gateway.YARP.http" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gateway/Gateway.YARP/Program.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gateway/Gateway.YARP/Properties/launchSettings.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gateway/Gateway.YARP/appsettings.Development.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/.env" beforeDir="false" afterPath="$PROJECT_DIR$/Services/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Auth/Auth.API/.env" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Auth/Auth.API/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Auth/Auth.API/Auth.API.http" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Auth/Auth.API/Data/Migrations/AuthContextModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Auth/Auth.API/Data/Migrations/AuthContextModelSnapshot.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Auth/Auth.API/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Auth/Auth.API/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Auth/Auth.API/Endpoints/CheckAuth.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Auth/Auth.API/Endpoints/CheckAuth.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Auth/Auth.API/Endpoints/Login.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Auth/Auth.API/Endpoints/Login.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Auth/Auth.API/Endpoints/Logout.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Auth/Auth.API/Endpoints/Logout.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Auth/Auth.API/Endpoints/RefreshToken.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Auth/Auth.API/Endpoints/RefreshToken.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Auth/Auth.API/Endpoints/Signup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Auth/Auth.API/Endpoints/Signup.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Auth/Auth.API/Entities/JwtOptions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Auth/Auth.API/Entities/JwtOptions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Auth/Auth.API/GlobalUsing.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Auth/Auth.API/GlobalUsing.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Auth/Auth.API/Services/TokenService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Auth/Auth.API/Services/TokenService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Interaction/Interaction.API/DependencyInjection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Interaction/Interaction.API/DependencyInjection.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Interaction/Interaction.API/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Interaction/Interaction.API/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Interaction/Interaction.API/Interaction.API.http" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Posts/Posts.API/.env" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Posts/Posts.API/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Posts/Posts.API/DependencyInjection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Posts/Posts.API/DependencyInjection.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Posts/Posts.API/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Posts/Posts.API/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Posts/Posts.API/Endpoints/CreatePost.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Posts/Posts.API/Endpoints/CreatePost.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Posts/Posts.API/Endpoints/DeletePost.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Posts/Posts.API/Endpoints/DeletePost.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Posts/Posts.API/Endpoints/GetPostById.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Posts/Posts.API/Endpoints/GetPostById.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Posts/Posts.API/GlobalUsing.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Posts/Posts.API/GlobalUsing.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Posts/Posts.API/Posts.API.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Posts/Posts.API/Posts.API.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Posts/Posts.API/Posts.API.http" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Profiles/Profiles.API/.env" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Profiles/Profiles.API/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Profiles/Profiles.API/DependencyInjection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Profiles/Profiles.API/DependencyInjection.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Profiles/Profiles.API/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Profiles/Profiles.API/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Profiles/Profiles.API/Profiles.API.http" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Profiles/Profiles.Infrastructure/Data/Migrations/20250609132755_Initial.Designer.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Profiles/Profiles.Infrastructure/Data/Migrations/20250609132755_Initial.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Profiles/Profiles.Infrastructure/Data/Migrations/ProfilesContextModelSnapshot.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Services/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tripex.sln" beforeDir="false" afterPath="$PROJECT_DIR$/Tripex.sln" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="DpaMonitoringSettings">
+    <option name="firstShow" value="false" />
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Services/Auth/Auth.API/Endpoints/Jwks.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Services/Auth/Auth.API/Endpoints/OpenIdConfiguration.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
 }</component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="Toolset" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
   <component name="ProjectId" id="39Ike9VnGdxhHDxpypVXTbZT0dJ" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;.NET Launch Settings Profile.Auth.API: http.executor&quot;: &quot;Run&quot;,
+    &quot;.NET Launch Settings Profile.Gateway.YARP: http.executor&quot;: &quot;Run&quot;,
+    &quot;.NET Launch Settings Profile.Interaction.API: http.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.Services: Compose Deployment.executor&quot;: &quot;Run&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
@@ -46,7 +115,28 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Docker.Auth.API/Dockerfile">
+  <component name="RunManager" selected="Docker.Services: Compose Deployment">
+    <configuration name="Gateway.YARP" type="DotNetProject" factoryName=".NET Project">
+      <option name="EXE_PATH" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="ENV_FILE_PATHS" value="" />
+      <option name="REDIRECT_INPUT_PATH" value="" />
+      <option name="MIXED_MODE_DEBUG" value="0" />
+      <option name="USE_MONO" value="0" />
+      <option name="RUNTIME_ARGUMENTS" value="" />
+      <option name="AUTO_ATTACH_CHILDREN" value="0" />
+      <option name="PROJECT_PATH" value="$PROJECT_DIR$/Services/Gateway.YARP/Gateway.YARP.csproj" />
+      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+      <option name="PROJECT_KIND" value="DotNetCore" />
+      <option name="PROJECT_TFM" value="" />
+      <method v="2">
+        <option name="Build" />
+      </method>
+    </configuration>
     <configuration name="Auth.API: http" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/Services/Auth/Auth.API/Auth.API.csproj" />
       <option name="LAUNCH_PROFILE_TFM" value="net8.0" />
@@ -138,6 +228,28 @@
       <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="false" />
       <method v="2" />
     </configuration>
+    <configuration name="Gateway.YARP/Dockerfile (1)" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
+      <deployment type="dockerfile">
+        <settings>
+          <option name="containerName" value="gateway.yarp" />
+          <option name="contextFolderPath" value="C:\WebApi\Tripex" />
+          <option name="sourceFilePath" value="Services/Gateway.YARP/Dockerfile" />
+        </settings>
+      </deployment>
+      <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="false" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Gateway.YARP/Dockerfile (2)" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
+      <deployment type="dockerfile">
+        <settings>
+          <option name="containerName" value="gateway.yarp" />
+          <option name="contextFolderPath" value="C:\WebApi\Tripex" />
+          <option name="sourceFilePath" value="Services/Gateway/Gateway.YARP/Dockerfile" />
+        </settings>
+      </deployment>
+      <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="false" />
+      <method v="2" />
+    </configuration>
     <configuration name="Gateway.YARP/Dockerfile" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
       <deployment type="dockerfile">
         <settings>
@@ -182,6 +294,22 @@
       <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="false" />
       <method v="2" />
     </configuration>
+    <configuration name="Services: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="sourceFilePath" value="Services/docker-compose.yml" />
+        </settings>
+      </deployment>
+      <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="false" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
+      <deployment type="docker-compose.yml">
+        <settings />
+      </deployment>
+      <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="false" />
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="docker-deploy" factoryName="dockerfile" temporary="true">
       <deployment type="dockerfile">
         <settings />
@@ -189,6 +317,11 @@
       <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="false" />
       <method v="2" />
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Docker.Services: Compose Deployment" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -198,7 +331,19 @@
       <option name="presentableId" value="Default" />
       <updated>1770391065201</updated>
       <workItem from="1770391066855" duration="154000" />
+      <workItem from="1770391253147" duration="4516000" />
+      <workItem from="1770463638710" duration="4352000" />
+      <workItem from="1770470705015" duration="5178000" />
     </task>
+    <task id="LOCAL-00001" summary="CheckPoint">
+      <option name="closed" value="true" />
+      <created>1770391368920</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1770391368920</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -206,8 +351,13 @@
   </component>
   <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.pem" />
+  </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="CheckPoint" />
+    <option name="LAST_COMMIT_MESSAGE" value="CheckPoint" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

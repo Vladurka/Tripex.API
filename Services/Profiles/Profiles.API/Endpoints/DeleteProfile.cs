@@ -6,7 +6,7 @@ public class DeleteProfile : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapDelete("/api/profiles", async (ISender sender, IJwtHelper helper) =>
+        app.MapDelete("/api/profiles", async ([FromServices] ISender sender, [FromServices] IJwtHelper helper) =>
             {
                 var result = await sender.Send(new DeleteProfileCommand(helper.GetUserIdByToken()));
                 return Results.Ok(result);

@@ -1,4 +1,3 @@
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.IdentityModel.Tokens;
@@ -7,12 +6,11 @@ namespace BuildingBlocks.Auth;
 
 public static class Extensions
 {
-    public static IServiceCollection AddAuth(this IServiceCollection services,
-        IConfiguration config)
+    public static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration config)
     {
         services.AddHttpContextAccessor();
         services.AddScoped<IJwtHelper, JwtHelper>();
-        
+
         services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -20,15 +18,20 @@ public static class Extensions
             })
             .AddJwtBearer(options =>
             {
+                options.Authority = config["JwtOptions:Authority"];  
+                options.RequireHttpsMetadata = false;                 
+
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
                     ValidIssuer = config["JwtOptions:Issuer"],
+
+                    ValidateAudience = true,
                     ValidAudience = config["JwtOptions:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtOptions:SecurityKey"]!))
+
+                    ValidateLifetime = true,
+
+                    ValidateIssuerSigningKey = true
                 };
 
                 options.Events = new JwtBearerEvents
@@ -42,16 +45,13 @@ public static class Extensions
             });
 
         services.AddAuthorization();
-        
         return services;
     }
-    
+
     public static WebApplication UseAuth(this WebApplication app)
     {
         app.UseAuthentication();
-
         app.UseAuthorization();
-            
         return app;
     }
 }

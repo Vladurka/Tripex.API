@@ -13,8 +13,6 @@ public static class DependencyInjection
         services.AddHealthChecks();
         services.AddOutboxPattern<ProfilesContext>();
         
-        services.AddAuth(configuration);
-            
         return services;
     }
 
@@ -24,8 +22,6 @@ public static class DependencyInjection
         app.UseExceptionHandler(opts => { });
         app.UseHealthChecks("/health");
 
-        app.UseAuth();
-            
         return app;
     }
 }
