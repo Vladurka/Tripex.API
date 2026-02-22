@@ -8,23 +8,13 @@ public class GetProfileByIdHandler(IProfilesRepository repo, IOutboxRepository o
     public async Task<GetProfileResult> Handle(GetProfileByIdQuery query, CancellationToken cancellationToken)
     {
         var profileId = ProfileId.Of(query.ProfileId);
-        var profile = 
-            await redisRepo.GetCachedProfileAsync(profileId);
+        var profile = await redisRepo.GetCachedProfileAsync(profileId);
         
         if (profile == null)
         {
             profile = await repo.GetProfileByIdAsync(profileId, cancellationToken, false) ?? 
                 throw new NotFoundException("Profile", query.ProfileId);
 
-            if (profile.IsCached)
-            {
-                profile.SetIsCached(false);
-                await repo.SaveChangesAsync(cancellationToken);
-            }
-        }
-
-        if (!profile.IsCached)
-        {
             if (profile.ShouldBeCached())
             {
                 var eventMessage = query.Adapt<CacheUserEvent>();
@@ -32,6 +22,7 @@ public class GetProfileByIdHandler(IProfilesRepository repo, IOutboxRepository o
                     JsonSerializer.Serialize(eventMessage));
                 await outboxRepo.AddOutboxMessageAsync(outboxMessage);
             }
+            
             await repo.SaveChangesAsync(cancellationToken, false);
         }
 

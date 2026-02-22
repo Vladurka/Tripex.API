@@ -12,6 +12,7 @@ namespace Posts.Infrastructure.Data;
 public class PostsRedisRepository : IPostsRedisRepository
 {
     private readonly IDatabase _redisDb;
+    private static readonly TimeSpan PostsTtl = TimeSpan.FromMinutes(15);
 
     public PostsRedisRepository(IConnectionMultiplexer redis) =>
         _redisDb = redis.GetDatabase();
@@ -20,14 +21,14 @@ public class PostsRedisRepository : IPostsRedisRepository
     {
         var key = ConvertToKey(profileId);
         var value = JsonSerializer.Serialize(posts.Select(p => p.ToCachedPostDto()));
-        await _redisDb.StringSetAsync(key, value);
+        await _redisDb.StringSetAsync(key, value, PostsTtl);
     }
 
-    public async Task<IEnumerable<Post>> GetCachedPostsAsync(ProfileId profileId)
+    public async Task<IEnumerable<Post>?> GetCachedPostsAsync(ProfileId profileId)
     {
         var value = await _redisDb.StringGetAsync(ConvertToKey(profileId));
         return value.IsNullOrEmpty
-            ? Enumerable.Empty<Post>()
+            ? null
             : JsonSerializer.Deserialize<IEnumerable<CachedPostDto>>(value!)!.Select(p => p.ToDomain());
     }
 
@@ -44,7 +45,7 @@ public class PostsRedisRepository : IPostsRedisRepository
             : JsonSerializer.Deserialize<IEnumerable<CachedPostDto>>(value!)!.Select(p => p.ToDomain()).Append(post);
 
         var serialized = JsonSerializer.Serialize(posts.Select(p => p.ToCachedPostDto()));
-        await _redisDb.StringSetAsync(key, serialized);
+        await _redisDb.StringSetAsync(key, serialized, PostsTtl);
     }
 
     public async Task DeletePostAsync(PostId postId, ProfileId profileId)
@@ -64,12 +65,12 @@ public class PostsRedisRepository : IPostsRedisRepository
             return;
 
         var serialized = JsonSerializer.Serialize(updatedPosts);
-        await _redisDb.StringSetAsync(key, serialized);
+        await _redisDb.StringSetAsync(key, serialized, PostsTtl);
     }
 
     public async Task DeletePostsByProfileAsync(ProfileId profileId)=>
         await _redisDb.KeyDeleteAsync(ConvertToKey(profileId));
 
     private static string ConvertToKey(ProfileId profileId) =>
-        $"profile:{profileId.Value}";
+        $"posts:profile:{profileId.Value}";
 }

@@ -1,4 +1,6 @@
+using BuildingBlocks.Pagination;
+
 namespace Profiles.Application.Profiles.Queries.GetProfiles;
 
-public record GetProfilesQuery() : IQuery<GetProfilesResult>; 
-public record GetProfilesResult(GetProfileResult[] Profiles);
+public record GetProfilesQuery(PaginationRequest Pagination) : IQuery<GetProfilesResult>; 
+public record GetProfilesResult(PaginatedResult<GetProfileResult> Profiles);

@@ -58,10 +58,21 @@ public class PostRepository : IPostRepository
         return result;
     }
 
-    public async Task<IEnumerable<Post>> GetAllPostsAsync()
+    public async Task<IEnumerable<Post>> GetAllPostsAsync(int pageIndex = 0, int pageSize = 10)
     {
         var result = await _postsById.Select(_ => _).ExecuteAsync();
-        return result.Select(PostMapper.ToDomain).ToList();
+        return result
+            .OrderByDescending(p => p.CreatedAt)
+            .Skip(pageIndex * pageSize)
+            .Take(pageSize)
+            .Select(PostMapper.ToDomain)
+            .ToList();
+    }
+
+    public async Task<long> GetTotalCountAsync()
+    {
+        var result = await _postsById.Select(_ => _).ExecuteAsync();
+        return result.LongCount();
     }
 
     public async Task DeletePostAsync(PostId id)

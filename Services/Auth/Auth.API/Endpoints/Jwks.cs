@@ -6,7 +6,7 @@ public class Jwks : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("/.well-known/jwks.json", ([FromServices]IConfiguration config) =>
+        app.MapGet("/.well-known/jwks.json", ([FromServices] IConfiguration config) =>
             {
                 var publicKeyPath = config["JwtOptions:PublicKeyPath"] ?? "keys/jwt-public.pem";
                 var kid = config["JwtOptions:KeyId"] ?? "k1";
@@ -23,6 +23,7 @@ public class Jwks : ICarterModule
 
                 return Results.Json(new { keys = new[] { jwk } });
             })
+            .AllowAnonymous()
             .WithName("JWKS");
     }
 }

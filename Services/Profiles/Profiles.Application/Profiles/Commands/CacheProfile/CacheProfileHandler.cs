@@ -9,9 +9,6 @@ public class CacheProfileHandler(IProfilesRedisRepository redisRepo, IProfilesRe
                       throw new NotFoundException("Profile", command.ProfileId);
 
         await redisRepo.CacheProfileAsync(profile);
-
-        profile.SetIsCached(true);
-        await repo.SaveChangesAsync(cancellationToken);
         
         return Unit.Value;
     }

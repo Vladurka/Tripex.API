@@ -9,6 +9,8 @@ namespace Profiles.Infrastructure.Data;
 public class ProfilesRedisRepository : IProfilesRedisRepository
 {
     private readonly IDatabase _redisDb;
+    private static readonly TimeSpan ProfileTtl = TimeSpan.FromMinutes(30);
+    private static readonly TimeSpan BasicInfoTtl = TimeSpan.FromMinutes(60);
 
     public ProfilesRedisRepository(IConnectionMultiplexer redis) =>
         _redisDb = redis.GetDatabase();
@@ -17,14 +19,14 @@ public class ProfilesRedisRepository : IProfilesRedisRepository
     {
         var key = GetProfileKey(profile.Id);
         var value = JsonSerializer.Serialize(profile.ToCachedDto());
-        await _redisDb.StringSetAsync(key, value, when: When.NotExists);
+        await _redisDb.StringSetAsync(key, value, ProfileTtl, when: When.NotExists);
     }
 
     public async Task CacheBasicInfo(Profile profile)
     {
         var key = GetBasicInfoKey(profile.Id);
         var value = JsonSerializer.Serialize(profile.ToBasicInfoDto());
-        await _redisDb.StringSetAsync(key, value, when: When.NotExists);
+        await _redisDb.StringSetAsync(key, value, BasicInfoTtl, when: When.NotExists);
     }
 
     public async Task<Profile?> GetCachedProfileAsync(ProfileId profileId)
@@ -42,8 +44,11 @@ public class ProfilesRedisRepository : IProfilesRedisRepository
     public async Task UpdateProfileAsync(Profile profile)
     {
         var key = GetProfileKey(profile.Id);
-        var value = JsonSerializer.Serialize(profile.ToCachedDto());
-        await _redisDb.StringSetAsync(key, value);
+        if (await _redisDb.KeyExistsAsync(key))
+        {
+            var value = JsonSerializer.Serialize(profile.ToCachedDto());
+            await _redisDb.StringSetAsync(key, value, ProfileTtl);
+        }
     }
 
     public async Task UpdateBasicInfoAsync(Profile profile)
@@ -52,7 +57,7 @@ public class ProfilesRedisRepository : IProfilesRedisRepository
         if (await _redisDb.KeyExistsAsync(key))
         {
             var value = JsonSerializer.Serialize(profile.ToBasicInfoDto());
-            await _redisDb.StringSetAsync(key, value);
+            await _redisDb.StringSetAsync(key, value, BasicInfoTtl);
         }
     }
 

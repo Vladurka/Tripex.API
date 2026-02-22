@@ -11,6 +11,7 @@ public class RefreshToken : ICarterModule
                 await sender.Send(new RefreshTokenCommand(token));
                 return Results.Ok(true);
             }})
+            .RequireAuthorization() 
             .WithName("RefreshToken")
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status500InternalServerError)

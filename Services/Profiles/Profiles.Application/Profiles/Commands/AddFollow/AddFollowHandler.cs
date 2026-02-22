@@ -8,7 +8,8 @@ public class AddFollowHandler(IProfilesRepository repo) : ICommandHandler<AddFol
         var profile = await repo.GetProfileByIdAsync(profileId, cancellationToken, false) ??
                       throw new NotFoundException("Profile", command.ProfileId);
         
-        var follower = await repo.GetProfileByIdAsync(profileId, cancellationToken, false) ??
+        var followerId = ProfileId.Of(command.FollowerId);
+        var follower = await repo.GetProfileByIdAsync(followerId, cancellationToken, false) ??
                       throw new NotFoundException("Profile", command.FollowerId);
         
         profile.AddFollower();

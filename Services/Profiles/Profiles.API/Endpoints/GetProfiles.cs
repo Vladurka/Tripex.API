@@ -1,3 +1,4 @@
+using BuildingBlocks.Pagination;
 using Profiles.Application.Profiles.Queries.GetProfiles;
 
 namespace Profiles.API.Endpoints;
@@ -6,16 +7,17 @@ public class GetProfiles : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/profiles", async ([FromServices] ISender sender) =>
+        app.MapGet("/api/profiles",
+            async ([AsParameters] PaginationRequest pagination, [FromServices] ISender sender) =>
         {
-            var result = await sender.Send(new GetProfilesQuery());
+            var result = await sender.Send(new GetProfilesQuery(pagination));
             return Results.Ok(result);
         })
+        .AllowAnonymous()
         .WithName("GetProfiles")
-        .Produces<GetProfilesQuery>()
+        .Produces<GetProfilesResult>()
         .ProducesProblem(StatusCodes.Status400BadRequest)
-        .ProducesProblem(StatusCodes.Status404NotFound)
         .WithSummary("Get profiles")
-        .WithDescription("Get profiles");
+        .WithDescription("Get profiles with pagination");
     }
 }

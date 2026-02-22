@@ -40,8 +40,7 @@ public class UpdateProfileHandler(
                 await outboxRepo.AddOutboxMessageAsync(outboxMessage);
             }
             
-            if (profile.IsCached)
-                await redisRepo.UpdateProfileAsync(profile);
+            await redisRepo.UpdateProfileAsync(profile);
 
             await transaction.CommitAsync(cancellationToken);
 

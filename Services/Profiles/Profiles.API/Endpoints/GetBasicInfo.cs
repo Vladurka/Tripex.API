@@ -11,6 +11,7 @@ public class GetBasicInfo : ICarterModule
                 var result = await sender.Send(new GetBaseInfoQuery(id));
                 return Results.Ok(result);
             })
+            .AllowAnonymous()
             .WithName("GetBaseInfo")
             .Produces<GetBaseInfoQuery>()
             .ProducesProblem(StatusCodes.Status400BadRequest)

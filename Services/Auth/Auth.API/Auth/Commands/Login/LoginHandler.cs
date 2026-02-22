@@ -10,7 +10,7 @@ public class LoginHandler(IPasswordHasher passwordHasher, ITokenService tokenSer
             throw new NotFoundException("User", command.Email);
 
         if (!passwordHasher.VerifyPassword(user.PasswordHash, command.Password))
-            throw new Exception("Bad password");
+            throw new BadRequestException("Invalid password");
         
         var tokens = tokenService.GenerateTokens(user.Id);
         

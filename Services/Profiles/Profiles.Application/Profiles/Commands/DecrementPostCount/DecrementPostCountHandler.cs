@@ -12,15 +12,10 @@ public class DecrementPostCountHandler(IProfilesRepository repo,
 
         profile.DecrementPostCount();
 
-        List<Task> tasks = new()
-        {
-            repo.SaveChangesAsync(cancellationToken)
-        };
-
-        if (profile.IsCached)
-            tasks.Add(redisRepo.UpdateProfileAsync(profile));
-
-        await Task.WhenAll(tasks);
+        await Task.WhenAll(
+            repo.SaveChangesAsync(cancellationToken),
+            redisRepo.UpdateProfileAsync(profile)
+        );
         return Unit.Value;
     }
 }

@@ -11,6 +11,7 @@ public class GetProfileById : ICarterModule
             var result = await sender.Send(new GetProfileByIdQuery(id));
             return Results.Ok(result);
         })
+        .AllowAnonymous()
         .WithName("GetProfileById")
         .Produces<GetProfileByIdQuery>()
         .ProducesProblem(StatusCodes.Status400BadRequest)

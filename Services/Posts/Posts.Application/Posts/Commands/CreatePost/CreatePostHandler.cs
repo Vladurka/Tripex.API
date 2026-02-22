@@ -18,7 +18,7 @@ public class CreatePostHandler(IPostRepository repo, IBlobStorageService blobSto
         var id = Guid.NewGuid();
         
         if (!await moderationService.ModeratePhoto(command.Photo))
-            throw new Exception("This photo is not allowed");
+            throw new BadRequestException("This photo is not allowed");
 
         var url = await blobStorageService.UploadPhotoAsync(command.Photo, id, cancellationToken);
 

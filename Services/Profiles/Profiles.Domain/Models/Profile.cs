@@ -1,9 +1,8 @@
-using BuildingBlocks.Cache;
 using Profiles.Domain.Abstractions;
 using Profiles.Domain.ValueObjects;
 
 namespace Profiles.Domain.Models;
-public class Profile : Entity<ProfileId>, ICachable
+public class Profile : Entity<ProfileId>
 {
     public string? AvatarUrl { get; private set; }
     public ProfileName ProfileName { get; private set; }
@@ -15,7 +14,6 @@ public class Profile : Entity<ProfileId>, ICachable
     public int PostCount { get; private set; }
     public int ViewCount { get; private set; }
     public DateTime ViewCountResetAt { get; private set; } = DateTime.UtcNow;
-    public bool IsCached { get; private set; }
     
     private const int ViewCountUpdateTime = 7;
     private const int CountTrigger = 2;
@@ -93,9 +91,6 @@ public class Profile : Entity<ProfileId>, ICachable
         ViewCountResetAt = DateTime.UtcNow;
     }
 
-    public void SetIsCached(bool value) =>
-        IsCached = value;
-
     public bool ShouldBeCached()
     {
         UpdateViewCount();
@@ -103,7 +98,6 @@ public class Profile : Entity<ProfileId>, ICachable
         if (ViewCount >= CountTrigger)
         {
             ResetViewCount();
-            IsCached = true;
             return true;
         }
         

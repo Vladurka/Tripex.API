@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -42,7 +42,6 @@ namespace Profiles.Infrastructure.Migrations
                     PostCount = table.Column<int>(type: "integer", nullable: false),
                     ViewCount = table.Column<int>(type: "integer", nullable: false),
                     ViewCountResetAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    IsCached = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastModified = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },

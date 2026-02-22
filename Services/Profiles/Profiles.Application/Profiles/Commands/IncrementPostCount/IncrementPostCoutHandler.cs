@@ -12,15 +12,10 @@ public class IncrementPostCoutHandler(IProfilesRepository repo,
         
         profile.IncrementPostCount();
         
-        List<Task> tasks = new List<Task>
-        {
+        await Task.WhenAll(
             repo.SaveChangesAsync(cancellationToken),
-        };
-        
-        if(profile.IsCached)
-            tasks.Add(redisRepo.UpdateProfileAsync(profile));
-        
-        await Task.WhenAll(tasks);
+            redisRepo.UpdateProfileAsync(profile)
+        );
         
         return Unit.Value;   
     }

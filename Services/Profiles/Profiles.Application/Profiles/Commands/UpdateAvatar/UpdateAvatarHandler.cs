@@ -13,9 +13,7 @@ public class UpdateAvatarHandler(IProfilesRepository repo, IProfilesRedisReposit
             await blobStorage.DeletePhotoAsync(command.ProfileId, cancellationToken);
             profile.UpdateAvatar(string.Empty);
             await repo.SaveChangesAsync(cancellationToken);
-            
-            if(profile.IsCached)
-                await redisRepo.UpdateProfileAsync(profile);
+            await redisRepo.UpdateProfileAsync(profile);
             
             return new UpdateAvatarResult(profile.AvatarUrl);
         }
@@ -24,6 +22,7 @@ public class UpdateAvatarHandler(IProfilesRepository repo, IProfilesRedisReposit
         profile.LastModified = DateTime.UtcNow;
         
         await redisRepo.UpdateBasicInfoAsync(profile);
+        await redisRepo.UpdateProfileAsync(profile);
         await repo.SaveChangesAsync(cancellationToken);
 
         return new UpdateAvatarResult(profile.AvatarUrl);

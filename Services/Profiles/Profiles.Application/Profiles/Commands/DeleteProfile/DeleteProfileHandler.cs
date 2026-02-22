@@ -21,17 +21,12 @@ public class DeleteProfileHandler(IProfilesRepository repo, IProfilesRedisReposi
 
             await repo.RemoveProfileAsync(profile, cancellationToken);
             
-            var tasks = new List<Task>
-            {
+            await Task.WhenAll(
                 redisRepo.DeleteBasicInfoAsync(profileId),
+                redisRepo.DeleteProfileAsync(profileId),
                 blobStorage.DeletePhotoAsync(profileId.Value, cancellationToken),
                 outboxRepo.AddOutboxMessageAsync(outboxMessage)
-            };
-
-            if (profile.IsCached)
-                tasks.Add(redisRepo.DeleteProfileAsync(profileId));
-    
-            await Task.WhenAll(tasks);
+            );
 
             await transaction.CommitAsync(cancellationToken);
 
