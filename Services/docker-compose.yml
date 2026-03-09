@@ -9,10 +9,11 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: auth
-    ports:
-      - "5433:5432"
-    networks:
-      - appnet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d auth"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     volumes:
       - auth_postgres_data:/var/lib/postgresql/data
 
@@ -24,10 +25,11 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: profile
-    ports:
-      - "5434:5432"
-    networks:
-      - appnet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d profile"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     volumes:
       - profile_postgres_data:/var/lib/postgresql/data
 
@@ -39,10 +41,11 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: post_outbox
-    ports:
-      - "5435:5432"
-    networks:
-      - appnet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d post_outbox"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     volumes:
       - post_postgres_data:/var/lib/postgresql/data
 
@@ -50,24 +53,26 @@ services:
   # ======================== Redis ========================
 
   profile-redis-db:
-    image: redis:latest
+    image: redis:7
     container_name: profile-redis
     restart: on-failure
-    ports:
-      - "6380:6379"
-    networks:
-      - appnet
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     volumes:
       - profile_redis_data:/data
 
   post-redis-db:
-    image: redis:latest
+    image: redis:7
     container_name: post-redis
     restart: on-failure
-    ports:
-      - "6381:6379"
-    networks:
-      - appnet
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     volumes:
       - post_redis_data:/data
 
@@ -78,25 +83,40 @@ services:
     image: scylladb/scylla:latest
     container_name: post-scylla
     restart: unless-stopped
-    ports:
-      - "9043:9042"
     command: --smp 2 --memory 2G
-    networks:
-      - appnet
+    healthcheck:
+      test: ["CMD-SHELL", "cqlsh -e 'SELECT now() FROM system.local' || exit 1"]
+      interval: 10s
+      timeout: 10s
+      start_period: 60s
+      retries: 15
     volumes:
       - post_scylla_data:/var/lib/scylla
 
-  interaction-scylla-db:
+  post-scylla-init:
     image: scylladb/scylla:latest
-    container_name: interaction-scylla
-    restart: unless-stopped
-    ports:
-      - "9044:9042"
-    command: --smp 2 --memory 2G
-    networks:
-      - appnet
+    container_name: post-scylla-init
+    restart: on-failure
+    depends_on:
+      post-scylla-db:
+        condition: service_healthy
     volumes:
-      - interaction_scylla_data:/var/lib/scylla
+      - ../Services/Posts/Scripts/init.cql:/init.cql
+    entrypoint: ["cqlsh", "post-scylla-db", "-f", "/init.cql"]
+
+  # interaction-scylla-db:
+  #   image: scylladb/scylla:6.2
+  #   container_name: interaction-scylla
+  #   restart: unless-stopped
+  #   command: --smp 2 --memory 2G
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "cqlsh -e 'SELECT now() FROM system.local' || exit 1"]
+  #     interval: 10s
+  #     timeout: 10s
+  #     start_period: 60s
+  #     retries: 15
+  #   volumes:
+  #     - interaction_scylla_data:/var/lib/scylla
 
 
   # ======================= RabbitMQ =======================
@@ -109,14 +129,16 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
     ports:
-      - "5672:5672"
       - "15672:15672"
-    networks:
-      - appnet
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
-        
+
 # ========================= Services ========================
 
   gateway-yarp:
@@ -129,12 +151,14 @@ services:
     env_file:
       - Gateway/Gateway.YARP/.env
     depends_on:
-      - auth-api
-      - profiles-api
-      - posts-api
-      - interaction-api
-    networks:
-      - appnet
+      auth-api:
+        condition: service_healthy
+      profiles-api:
+        condition: service_healthy
+      posts-api:
+        condition: service_healthy
+      # interaction-api:
+      #   condition: service_healthy
 
   auth-api:
     build:
@@ -143,11 +167,16 @@ services:
     restart: on-failure
     env_file:
       - Auth/Auth.API/.env
+    healthcheck:
+      test: ["CMD", "bash", "-c", "cat < /dev/tcp/localhost/8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     depends_on:
-      - auth-postgres-db
-      - rabbitmq
-    networks:
-      - appnet
+      auth-postgres-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   profiles-api:
     build:
@@ -156,12 +185,18 @@ services:
     restart: on-failure
     env_file:
       - Profiles/Profiles.API/.env
+    healthcheck:
+      test: ["CMD", "bash", "-c", "cat < /dev/tcp/localhost/8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     depends_on:
-      - profile-postgres-db
-      - profile-redis-db
-      - rabbitmq
-    networks:
-      - appnet
+      profile-postgres-db:
+        condition: service_healthy
+      profile-redis-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   posts-api:
     build:
@@ -170,26 +205,38 @@ services:
     restart: on-failure
     env_file:
       - Posts/Posts.API/.env
+    healthcheck:
+      test: ["CMD", "bash", "-c", "cat < /dev/tcp/localhost/8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     depends_on:
-      - post-postgres-db
-      - post-scylla-db
-      - post-redis-db
-      - rabbitmq
-    networks:
-      - appnet
+      post-postgres-db:
+        condition: service_healthy
+      post-scylla-init:
+        condition: service_completed_successfully
+      post-redis-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
-  interaction-api:
-    build:
-      context: ..
-      dockerfile: Services/Interaction/Interaction.API/Dockerfile
-    restart: on-failure
-    env_file:
-      - Interaction/Interaction.API/.env
-    depends_on:
-      - rabbitmq
-      - interaction-scylla-db
-    networks:
-      - appnet
+  # interaction-api:
+  #   build:
+  #     context: ..
+  #     dockerfile: Services/Interaction/Interaction.API/Dockerfile
+  #   restart: on-failure
+  #   env_file:
+  #     - Interaction/Interaction.API/.env
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #     interaction-scylla-db:
+  #       condition: service_healthy
 
 # ========================= VOLUMES =========================
 
@@ -202,12 +249,6 @@ volumes:
   post_redis_data:
 
   post_scylla_data:
-  interaction_scylla_data:
+  # interaction_scylla_data:
 
   rabbitmq_data:
-  
-# ========================= NETWORKS =========================
-
-networks:
-  appnet:
-    driver: bridge
