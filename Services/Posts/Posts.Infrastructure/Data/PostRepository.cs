@@ -1,6 +1,6 @@
 using BuildingBlocks.Exceptions;
+using Cassandra;
 using Cassandra.Data.Linq;
-using Microsoft.Extensions.Options;
 using Posts.Application.Data;
 using Posts.Application.Posts.DTO;
 using Posts.Application.Posts.Extensions;
@@ -9,17 +9,10 @@ using Posts.Domain.ValueObjects;
 
 namespace Posts.Infrastructure.Data;
 
-public class PostRepository : IPostRepository
+public class PostRepository(ISession session) : IPostRepository
 {
-    private readonly Table<PostByIdDb> _postsById;
-    private readonly Table<PostByProfileDb> _postsByProfile;
-
-    public PostRepository(IOptions<ScyllaDbSettings> options)
-    {
-        var session = ScyllaDbSession.Connect(options);
-        _postsById = new Table<PostByIdDb>(session);
-        _postsByProfile = new Table<PostByProfileDb>(session);
-    }
+    private readonly Table<PostByIdDb> _postsById = new(session);
+    private readonly Table<PostByProfileDb> _postsByProfile = new(session);
 
     public async Task AddPostAsync(Post post)
     {
@@ -35,7 +28,6 @@ public class PostRepository : IPostRepository
             .ExecuteAsync();
 
         var db = result.FirstOrDefault();
-        Console.WriteLine(db?.CreatedAt);
         return db?.ToDomain();
     }
 
@@ -71,8 +63,8 @@ public class PostRepository : IPostRepository
 
     public async Task<long> GetTotalCountAsync()
     {
-        var result = await _postsById.Select(_ => _).ExecuteAsync();
-        return result.LongCount();
+        var result = await _postsById.Count().ExecuteAsync();
+        return result;
     }
 
     public async Task DeletePostAsync(PostId id)
@@ -97,22 +89,30 @@ public class PostRepository : IPostRepository
     
     public async Task DeletePostsAsync(ProfileId profileId)
     {
-        var posts = await _postsById
+        var postIds = await _postsByProfile
             .Where(p => p.ProfileId == profileId.Value)
+            .Select(p => p.Id)
             .ExecuteAsync();
 
-        foreach (var post in posts)
-        {
-            await _postsById
-                .Where(p => p.Id == post.Id)
-                .Delete()
-                .ExecuteAsync();
+        var ids = postIds.ToList();
+        if (ids.Count == 0) return;
 
-            await _postsByProfile
-                .Where(p => p.ProfileId == post.ProfileId && p.Id == post.Id)
+        var batch = new BatchStatement();
+
+        foreach (var id in ids)
+        {
+            batch.Add(_postsById
+                .Where(p => p.Id == id)
                 .Delete()
-                .ExecuteAsync();
+                .SetConsistencyLevel(ConsistencyLevel.LocalQuorum));
         }
+
+        batch.Add(_postsByProfile
+            .Where(p => p.ProfileId == profileId.Value)
+            .Delete()
+            .SetConsistencyLevel(ConsistencyLevel.LocalQuorum));
+
+        await session.ExecuteAsync(batch);
     }
 
 }

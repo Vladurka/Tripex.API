@@ -37,6 +37,15 @@ public class OutboxPublisherService<T>(IServiceScopeFactory scopeFactory) : Back
                 message.PublishedAt = DateTime.UtcNow;
             }
 
+            var threshold = DateTime.UtcNow.AddDays(-7);
+            var stale = await db.OutboxMessages
+                .Where(x => x.IsPublished && x.PublishedAt < threshold)
+                .Take(100)
+                .ToListAsync(cancellationToken);
+
+            if (stale.Count > 0)
+                db.OutboxMessages.RemoveRange(stale);
+
             await db.SaveChangesAsync(cancellationToken);
             await Task.Delay(30000, cancellationToken);
         }

@@ -74,6 +74,6 @@ public class TokenService : ITokenService
     }
 
     public string GenerateRefreshToken() =>
-        Guid.NewGuid().ToString(); 
+        Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 }
 

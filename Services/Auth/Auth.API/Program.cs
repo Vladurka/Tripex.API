@@ -45,12 +45,13 @@ builder.Services.AddMediatR(cfg =>
 
 builder.Services.AddMessageBroker(builder.Configuration, Assembly.GetExecutingAssembly());
 
-builder.Services.AddUserContext();
+builder.Services.AddAuth(builder.Configuration);
 
 var app = builder.Build();
 
-app.MapCarter();
 app.UseExceptionHandler(opts => { });
+app.UseAuth();
+app.MapCarter();
 app.UseHealthChecks("/health");
 
 using(var scope = app.Services.CreateScope())

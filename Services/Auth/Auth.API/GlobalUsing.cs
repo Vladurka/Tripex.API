@@ -4,7 +4,6 @@ global using System.IdentityModel.Tokens.Jwt;
 global using System.Security.Claims;
 global using System.Text;
 global using Auth.API.Services.Interfaces;
-global using Microsoft.Extensions.Options;
 global using Auth.API.Entities;
 global using BuildingBlocks.Exceptions;
 global using BuildingBlocks.Messaging.Events.Profiles;

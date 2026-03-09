@@ -1,6 +1,6 @@
 namespace Profiles.Application.Profiles.Commands.IncrementPostCount;
 
-public class IncrementPostCoutHandler(IProfilesRepository repo, 
+public class IncrementPostCountHandler(IProfilesRepository repo,
     IProfilesRedisRepository redisRepo) : ICommandHandler<IncrementPostCountCommand>
 {
     public async Task<Unit> Handle(IncrementPostCountCommand command, CancellationToken cancellationToken)

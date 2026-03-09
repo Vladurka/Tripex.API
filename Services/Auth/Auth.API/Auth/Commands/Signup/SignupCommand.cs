@@ -3,7 +3,7 @@ namespace Auth.API.Auth.Commands.Signup;
 public record SignupCommand(string UserName, string Email,
     string Password, string ConfirmPassword) : ICommand<RegisterResult>;
 
-public record RegisterResult(Guid UserId);
+public record RegisterResult(Guid UserId, string RefreshToken);
 
 public class RegisterCommandValidator : AbstractValidator<SignupCommand>
 {

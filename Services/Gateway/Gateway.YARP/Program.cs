@@ -1,3 +1,4 @@
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
 using BuildingBlocks.Auth;
 using Yarp.ReverseProxy.Transforms;
@@ -33,19 +34,35 @@ builder.Services.AddReverseProxy()
 
 builder.Services.AddRateLimiter(options =>
 {
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
     options.AddFixedWindowLimiter("RateLimiting", opt =>
     {
         opt.Window = TimeSpan.FromSeconds(10);
         opt.PermitLimit = 10;
         opt.QueueLimit = 0;
     });
+
+    options.AddPolicy("AuthRateLimiting", context =>
+        RateLimitPartition.GetSlidingWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(1),
+                SegmentsPerWindow = 3,
+                QueueLimit = 0
+            }));
 });
+
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+    ?? ["http://localhost:5173"];
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins(allowedOrigins)
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();

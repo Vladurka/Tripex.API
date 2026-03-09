@@ -7,7 +7,7 @@ public class GetProfiles : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/profiles",
+        app.MapGet("api/profiles",
             async ([AsParameters] PaginationRequest pagination, [FromServices] ISender sender) =>
         {
             var result = await sender.Send(new GetProfilesQuery(pagination));

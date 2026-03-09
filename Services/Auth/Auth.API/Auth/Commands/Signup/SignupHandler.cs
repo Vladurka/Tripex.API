@@ -41,7 +41,7 @@ public class SignupHandler(IPasswordHasher passwordHasher, ITokenService tokenSe
             
             tokenService.SetTokenWithId(user.Id, _options.TokenName, _options.AccessTokenExpirationMinutes);
 
-            return new RegisterResult(user.Id); 
+            return new RegisterResult(user.Id, tokens.RefreshToken);
         }
         catch (Exception)
         {

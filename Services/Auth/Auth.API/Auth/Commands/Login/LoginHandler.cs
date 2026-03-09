@@ -20,6 +20,6 @@ public class LoginHandler(IPasswordHasher passwordHasher, ITokenService tokenSer
         user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(_options.RefreshTokenExpirationDays);
         await repo.UpdateAsync(user, cancellationToken); 
 
-        return new LoginResult(user.Id);
+        return new LoginResult(user.Id, tokens.RefreshToken);
     }
 }

@@ -7,7 +7,7 @@ public class UpdateProfile : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPut("/api/profiles", 
+        app.MapPut("api/profiles", 
                 async (UpdateProfileCommand command, [FromServices] ISender sender, [FromServices] IJwtHelper helper) =>
         {
             command.ProfileId = helper.GetUserIdByToken();

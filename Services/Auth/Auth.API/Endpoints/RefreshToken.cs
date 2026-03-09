@@ -6,15 +6,14 @@ public class RefreshToken : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/auth/refresh/{token}", async (string token, [FromServices] ISender sender) =>{
+        app.MapPost("api/auth/refresh", async ([FromBody] RefreshTokenCommand command, [FromServices] ISender sender) =>
             {
-                await sender.Send(new RefreshTokenCommand(token));
-                return Results.Ok(true);
-            }})
+                var result = await sender.Send(command);
+                return Results.Ok(result);
+            })
             .WithName("RefreshToken")
             .ProducesProblem(StatusCodes.Status400BadRequest)
-            .ProducesProblem(StatusCodes.Status500InternalServerError)
             .WithSummary("RefreshToken")
-            .WithDescription("RefreshToken");
+            .WithDescription("Refresh access token using a valid refresh token.");
     }
 }

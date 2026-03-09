@@ -7,7 +7,7 @@ public class UpdateAvatar : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPatch("/api/profiles/avatar",
+        app.MapPatch("api/profiles/avatar",
                 async ([FromForm] UpdateAvatarCommand command, [FromServices] ISender sender, [FromServices] IJwtHelper helper) =>
         {
             command.ProfileId = helper.GetUserIdByToken();
