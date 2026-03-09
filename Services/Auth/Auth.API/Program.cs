@@ -45,14 +45,18 @@ builder.Services.AddMediatR(cfg =>
 
 builder.Services.AddMessageBroker(builder.Configuration, Assembly.GetExecutingAssembly());
 
-builder.Services.AddAuth(builder.Configuration);
+builder.Services.AddUserContext();
 
 var app = builder.Build();
-
-app.UseAuth();
 
 app.MapCarter();
 app.UseExceptionHandler(opts => { });
 app.UseHealthChecks("/health");
+
+using(var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AuthContext>();
+    await dbContext.Database.MigrateAsync();
+}
 
 app.Run();

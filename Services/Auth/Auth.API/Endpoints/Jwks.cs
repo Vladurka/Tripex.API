@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 
 namespace Auth.API.Endpoints;
 
@@ -23,7 +23,6 @@ public class Jwks : ICarterModule
 
                 return Results.Json(new { keys = new[] { jwk } });
             })
-            .AllowAnonymous()
             .WithName("JWKS");
     }
 }

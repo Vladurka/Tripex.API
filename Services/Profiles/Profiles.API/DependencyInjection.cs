@@ -1,3 +1,4 @@
+using BuildingBlocks.Auth;
 using BuildingBlocks.Exceptions.Handler;
 using BuildingBlocks.Messaging.Outbox;
 using Profiles.Infrastructure.Data;
@@ -12,6 +13,7 @@ public static class DependencyInjection
         services.AddExceptionHandler<CustomExceptionHandler>();
         services.AddHealthChecks();
         services.AddOutboxPattern<ProfilesContext>();
+        services.AddUserContext();
         
         return services;
     }

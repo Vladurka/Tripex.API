@@ -48,6 +48,13 @@ public static class Extensions
         return services;
     }
 
+    public static IServiceCollection AddUserContext(this IServiceCollection services)
+    {
+        services.AddHttpContextAccessor();
+        services.AddScoped<IJwtHelper, HeaderBasedUserContext>();
+        return services;
+    }
+
     public static WebApplication UseAuth(this WebApplication app)
     {
         app.UseAuthentication();

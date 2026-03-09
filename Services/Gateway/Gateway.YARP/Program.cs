@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.RateLimiting;
 using BuildingBlocks.Auth;
+using Yarp.ReverseProxy.Transforms;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,24 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddReverseProxy()
-    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"))
+    .AddTransforms(context =>
+    {
+        context.AddRequestTransform(transform =>
+        {
+            transform.ProxyRequest.Headers.Remove("X-User-Id");
+
+            var user = transform.HttpContext.User;
+            if (user.Identity?.IsAuthenticated == true)
+            {
+                var userId = user.FindFirst("userId")?.Value;
+                if (!string.IsNullOrEmpty(userId))
+                    transform.ProxyRequest.Headers.Add("X-User-Id", userId);
+            }
+
+            return ValueTask.CompletedTask;
+        });
+    });
 
 builder.Services.AddRateLimiter(options =>
 {

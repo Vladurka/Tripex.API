@@ -12,7 +12,6 @@ public class GetPostById : ICarterModule
                 var result = await sender.Send(new GetPostByIdQuery(postId));
                 return Results.Ok(result);
             })
-            .AllowAnonymous()
             .WithName("GetPostById")
             .Produces<DeletePostResult>()
             .ProducesProblem(StatusCodes.Status400BadRequest)

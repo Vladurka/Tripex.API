@@ -11,7 +11,6 @@ public class GetProfileByName : ICarterModule
             var result = await sender.Send(new SearchProfilesByNameQuery(name));
             return Results.Ok(result);
         })
-        .AllowAnonymous()
         .WithName("SearchProfilesByName")
         .Produces<SearchProfilesByNameQuery>()
         .ProducesProblem(StatusCodes.Status400BadRequest)

@@ -31,6 +31,21 @@ services:
     volumes:
       - profile_postgres_data:/var/lib/postgresql/data
 
+  post-postgres-db:
+    image: postgres:17
+    container_name: post-postgres
+    restart: on-failure
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: post_outbox
+    ports:
+      - "5435:5432"
+    networks:
+      - appnet
+    volumes:
+      - post_postgres_data:/var/lib/postgresql/data
+
 
   # ======================== Redis ========================
 
@@ -125,8 +140,12 @@ services:
     build:
       context: ..
       dockerfile: Services/Auth/Auth.API/Dockerfile
+    restart: on-failure
     env_file:
       - Auth/Auth.API/.env
+    depends_on:
+      - auth-postgres-db
+      - rabbitmq
     networks:
       - appnet
 
@@ -134,8 +153,13 @@ services:
     build:
       context: ..
       dockerfile: Services/Profiles/Profiles.API/Dockerfile
+    restart: on-failure
     env_file:
       - Profiles/Profiles.API/.env
+    depends_on:
+      - profile-postgres-db
+      - profile-redis-db
+      - rabbitmq
     networks:
       - appnet
 
@@ -143,8 +167,14 @@ services:
     build:
       context: ..
       dockerfile: Services/Posts/Posts.API/Dockerfile
+    restart: on-failure
     env_file:
       - Posts/Posts.API/.env
+    depends_on:
+      - post-postgres-db
+      - post-scylla-db
+      - post-redis-db
+      - rabbitmq
     networks:
       - appnet
 
@@ -152,6 +182,7 @@ services:
     build:
       context: ..
       dockerfile: Services/Interaction/Interaction.API/Dockerfile
+    restart: on-failure
     env_file:
       - Interaction/Interaction.API/.env
     depends_on:
@@ -165,6 +196,7 @@ services:
 volumes:
   auth_postgres_data:
   profile_postgres_data:
+  post_postgres_data:
 
   profile_redis_data:
   post_redis_data:

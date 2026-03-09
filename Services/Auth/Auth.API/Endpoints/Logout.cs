@@ -10,7 +10,6 @@ public class Logout : ICarterModule
                 cookiesService.DeleteCookie(jwtOptions.Value.TokenName);
                 return Results.NoContent(); 
             })
-            .RequireAuthorization()
             .WithName("Logout")
             .WithSummary("Logout")
             .WithDescription("Logs the user out and deletes the auth token cookie.");

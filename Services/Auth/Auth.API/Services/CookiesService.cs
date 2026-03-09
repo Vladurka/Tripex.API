@@ -1,4 +1,4 @@
-﻿namespace Auth.API.Services
+namespace Auth.API.Services
 {
     public class CookiesService(IHttpContextAccessor httpContextAccessor) : ICookiesService
     {
@@ -20,16 +20,15 @@
 
         public string GetFromCookie(string name)
         {
-            if (httpContextAccessor.HttpContext!.Request.Cookies.TryGetValue(name, out string? value))
-                return value;
-            
+            if (httpContextAccessor?.HttpContext?.Request.Cookies.TryGetValue(name, out string? value) == true)
+                return value ?? string.Empty;
             return string.Empty;
         }
 
         public void DeleteCookie(string name)
         {
             if (!CookieExists(name))
-                throw new InvalidOperationException("Cookie is not found");
+                return;
 
             httpContextAccessor?.HttpContext?.Response.Cookies.Delete(name);
         }
@@ -63,7 +62,7 @@
         }
 
         public bool CookieExists(string name) =>
-            httpContextAccessor.HttpContext.Request.Cookies.ContainsKey(name);
+            httpContextAccessor?.HttpContext?.Request.Cookies.ContainsKey(name) == true;
     }
 }
 

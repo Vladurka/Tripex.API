@@ -14,7 +14,6 @@ public class UpdateAvatar : ICarterModule
             var result = await sender.Send(command);
             return Results.Ok(result);
         })
-        .RequireAuthorization()
         .DisableAntiforgery() 
         .WithName("UpdateAvatar")
         .Produces<UpdateAvatarResult>()

@@ -13,7 +13,6 @@ public class OpenIdConfiguration : ICarterModule
                     jwks_uri = $"{issuer}/.well-known/jwks.json"
                 });
             })
-            .AllowAnonymous()
             .WithName("OpenIdConfiguration");
     }
 }

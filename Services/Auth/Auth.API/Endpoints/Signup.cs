@@ -11,7 +11,6 @@ public class Signup : ICarterModule
                 var result = await sender.Send(command);
                 return Results.Ok(result);
             }})
-            .AllowAnonymous()
             .WithName("Signup")
             .Produces<RegisterResult>()
             .ProducesProblem(StatusCodes.Status400BadRequest)

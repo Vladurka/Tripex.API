@@ -13,7 +13,6 @@ public class CreatePost : ICarterModule
             var result = await sender.Send(command);
             return Results.Created($"api/posts", result);
         })
-        .RequireAuthorization()
         .DisableAntiforgery()
         .WithName("CreatePost")
         .Produces<CreatePostResult>()

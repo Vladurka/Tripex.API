@@ -13,7 +13,6 @@ public class GetPostsByUserId : ICarterModule
                 var result = await sender.Send(new GetPostsByUserQuery(userId));
                 return Results.Ok(result);
             })
-            .AllowAnonymous()
             .WithName("GetPostsByUserId")
             .Produces<GetPostsResult>()
             .ProducesProblem(StatusCodes.Status400BadRequest)

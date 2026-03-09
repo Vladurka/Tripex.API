@@ -14,7 +14,6 @@ public class Login : ICarterModule
                     var result = await sender.Send(command);
                     return Results.Ok(result);
                 })
-            .AllowAnonymous()
             .WithName("Login")
             .Produces<LoginResult>()
             .ProducesProblem(StatusCodes.Status400BadRequest)

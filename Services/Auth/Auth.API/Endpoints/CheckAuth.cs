@@ -8,8 +8,6 @@ public class CheckAuth : ICarterModule
     {
         app.MapGet("api/auth/check", ([FromServices] IJwtHelper helper) =>
             Results.Ok(helper.GetUserIdByToken()))
-            .AllowAnonymous()
-            .RequireAuthorization()
             .WithName("CheckAuth")
             .ProducesProblem(StatusCodes.Status401Unauthorized)
             .WithSummary("CheckAuth")

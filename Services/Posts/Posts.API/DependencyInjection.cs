@@ -1,3 +1,4 @@
+using BuildingBlocks.Auth;
 using BuildingBlocks.Exceptions.Handler;
 
 namespace Posts.API;
@@ -9,6 +10,7 @@ public static class DependencyInjection
         services.AddCarter();
         services.AddExceptionHandler<CustomExceptionHandler>();
         services.AddHealthChecks();
+        services.AddUserContext();
 
         return services;
     }

@@ -13,7 +13,6 @@ public class GetPosts : ICarterModule
             var result = await sender.Send(new GetPostsQuery(pagination));
             return Results.Ok(result);
         })
-        .AllowAnonymous()
         .WithName("GetPosts")
         .Produces<GetPostsResult>()
         .ProducesProblem(StatusCodes.Status400BadRequest)

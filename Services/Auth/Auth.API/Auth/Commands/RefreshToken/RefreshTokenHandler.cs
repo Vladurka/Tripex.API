@@ -1,3 +1,5 @@
+using BuildingBlocks.Exceptions;
+
 namespace Auth.API.Auth.Commands.RefreshToken;
 
 public class RefreshTokenHandler( ITokenService tokenService, IOptions<JwtOptions> options, 
@@ -9,7 +11,7 @@ public class RefreshTokenHandler( ITokenService tokenService, IOptions<JwtOption
         var user = await repo.GetUserByRefreshTokenAsync(command.RefreshToken, cancellationToken);
 
         if (user == null || user.RefreshTokenExpiry < DateTime.UtcNow)
-            throw new Exception("Invalid or expired refresh token");
+            throw new BadRequestException("Invalid or expired refresh token");
         
         var tokens = tokenService.GenerateTokens(user.Id);
 

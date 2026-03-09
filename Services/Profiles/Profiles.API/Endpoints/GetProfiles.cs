@@ -13,7 +13,6 @@ public class GetProfiles : ICarterModule
             var result = await sender.Send(new GetProfilesQuery(pagination));
             return Results.Ok(result);
         })
-        .AllowAnonymous()
         .WithName("GetProfiles")
         .Produces<GetProfilesResult>()
         .ProducesProblem(StatusCodes.Status400BadRequest)

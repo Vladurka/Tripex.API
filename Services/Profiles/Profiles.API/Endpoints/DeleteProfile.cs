@@ -11,7 +11,6 @@ public class DeleteProfile : ICarterModule
                 var result = await sender.Send(new DeleteProfileCommand(helper.GetUserIdByToken()));
                 return Results.Ok(result);
             })
-            .RequireAuthorization()
             .WithName("DeleteProfile")
             .Produces<DeleteProfileResult>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
